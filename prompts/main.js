@@ -94,50 +94,71 @@ $(document).ready(async function () {
                 } else {
                     await PromptDB.addPrompt(promptData);
                 }
+
+                for (const tag of promptData.tags) {
+                    if (!tagNames.includes(tag)) {
+                        await PromptDB.addTag(tag);
+                        tagNames.push(tag);
+
+                        // Also add the new tag to Select2 dropdown
+                        const newOption = new Option(tag, tag, false, false);
+                        $('#tags').append(newOption).trigger('change');
+                    }
+                }
+
                 await loadAllPrompts();
                 closeModal();
             } catch (err) {
                 alert(err.message);
             }
         });
-        
-        $("#tags").select2({
-            tags: true,
-            tokenSeparators: [',', ' ']
-        });
 
-        $("#tags").autocomplete({
-            source: tagNames,
-            minLength: 1,
-            focus: function (event, ui) {
-                return false;
-            },
-            select: function (event, ui) {
-                const currentTags = this.value.split(", ").filter(tag => tag.length > 0);
-                currentTags.pop();
-                currentTags.push(ui.item.value);
-                currentTags.push("");
-                this.value = currentTags.join(", ");
-                return false;
-            },
-            open: function (event, ui) {
-                $(this).data("ui-autocomplete").menu.element.children().first().addClass("ui-state-active");
-            }
-        }).keydown(function (event) {
-            if (event.keyCode === 9) {  // Tab key
-                event.preventDefault();
-                const menu = $(this).data("ui-autocomplete").menu;
-                if (menu) {
-                    const firstItem = menu.element.children().first().data("ui-autocomplete-item");
-                    if (firstItem) {
-                        $(this).data("ui-autocomplete")._trigger("select", event, { item: firstItem });
+        $("#deleteBtn").click(async function () {
+            if (currentPromptID) {
+                const isConfirmed = window.confirm("Are you sure you want to delete this prompt?");
+                if (isConfirmed) {
+                    try {
+                        await PromptDB.deletePrompt(currentPromptID);
+                        await loadAllPrompts();
+                        closeModal();
+                    } catch (err) {
+                        alert("Error deleting prompt: " + err.message);
                     }
                 }
             }
         });
 
+        $("#tags").select2({
+            tags: true,
+            tokenSeparators: [',', ' ']
+        });
+
+        $("#tags").on('select2:open', function (e) {
+            // Listen for keydown events on the search field
+            $('.select2-search__field').on('keydown', function (event) {
+                if (event.keyCode === 9) {  // Tab key
+                    event.preventDefault();
+                    const highlightedItem = $('.select2-results__option--highlighted').text();
+                    if (highlightedItem) {
+                        // Create a new tag and add it to the selected tags
+                        const selectedTags = $('#tags').val() || [];
+                        selectedTags.push(highlightedItem);
+                        $('#tags').val(selectedTags).trigger('change');
+
+                        // Close the dropdown
+                        $('#tags').select2('close');
+                    }
+                }
+            });
+        });
 
         $("#closeModalBtn").click(closeModal);
+
+        $(document).keydown(function (event) {
+            if (event.keyCode === 27) {  // Escape key
+                closeModal();
+            }
+        });
 
     } catch (err) {
         alert("Failed to initialize database: " + err.message);
@@ -151,7 +172,9 @@ function populateForm(promptData) {
 }
 
 function openModal() {
+    currentPromptID ? $("#deleteBtn").removeClass("hidden") : $("#deleteBtn").addClass("hidden");
     $("#crudModal").removeClass("hidden");
+    $("#title").focus();
 }
 
 function closeModal() {

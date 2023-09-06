@@ -53,11 +53,13 @@
           </div>
           <div class="mb-4">
             <label for="tags" class="block text-sm">Tags</label>
-            <select id="tags" name="tags" class="w-full p-2 border rounded" multiple="multiple"></select>
+            <select class="w-full p-2 border rounded" multiple="multiple" id="tags" name="tags" ></select>
             <div id="tagSuggestions" class="mt-2"></div>
           </div>
-          <div class="text-right">
-            <button type="button" id="deleteBtn" class="bg-red-500 text-white px-4 py-2 rounded hidden">Delete</button>
+          <div class="flex justify-between items-center mt-4">
+            <div id="deleteBtnWrapper">
+              <a id="deleteBtn" href="#" class="text-red-700 hover:underline hidden">Delete</a>
+            </div>
             <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
           </div>
         </form>
@@ -65,5 +67,4 @@
     </div>
   </div>
 </body>
-
 </html>
