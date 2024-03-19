@@ -259,7 +259,6 @@
                         matrixHtml += '<td></td>';
                     }
                 });
-                // Append a delete button at the end of each row, styled as a red X
                 matrixHtml += `<td>
                     <button onclick="deprioritizeTask('${task}')" class="deprioritize-btn">&#x2193;</button>
                     </td></tr>`;
@@ -269,54 +268,34 @@
         }
 
         function deleteTask(taskToDelete) {
-            // Remove the task from the tasks array
-            tasks = tasks.filter(task => task !== taskToDelete);
+            deprioritizedTasks = deprioritizedTasks.filter(task => task !== taskToDelete);
 
-            // Remove related comparisons from the comparisons object
             Object.keys(comparisons).forEach(key => {
                 if (key.includes(taskToDelete)) {
                     delete comparisons[key];
                 }
             });
 
-            // Regenerate the matrix, recalculate scores, and save the updated data
-            generateMatrix();
-            tallyScores();
-            displayResults();
-            saveData();
+            refresh();
         }
 
         function deprioritizeTask(taskToDeprioritize) {
-            // Move the task to the deprioritized list
             deprioritizedTasks.push(taskToDeprioritize);
             tasks = tasks.filter(task => task !== taskToDeprioritize);
 
-            // Remove related comparisons
             Object.keys(comparisons).forEach(key => {
                 if (key.includes(taskToDeprioritize)) {
                     delete comparisons[key];
                 }
             });
 
-            // Update the UI and save changes
-            generateMatrix();
-            tallyScores();
-            displayDeprioritizedTasks(); // Function to display deprioritized tasks
-            displayResults();
-            saveData();
+            refresh();
         }
 
         function prioritizeTask(taskToPrioritize) {
-            // Move the task back to the prioritized list
             tasks.push(taskToPrioritize);
             deprioritizedTasks = deprioritizedTasks.filter(task => task !== taskToPrioritize);
-
-            // Update the UI and save changes
-            generateMatrix();
-            tallyScores();
-            displayDeprioritizedTasks(); // Update deprioritized list display
-            displayResults();
-            saveData();
+            refresh();
         }
 
         function cyclePreference(task, compareTask) {
@@ -330,11 +309,7 @@
 
             // Update comparisons with the new state
             comparisons[task + '-vs-' + compareTask] = nextState;
-            tallyScores();
-            saveData();
-
-            displayResults();
-
+            refresh();
         }
 
         function tallyScores() {
@@ -386,6 +361,14 @@
             });
             deprioritizedHtml += '</table>';
             $('#deprioritizedTasks').html(deprioritizedHtml);
+        }
+
+        function refresh() {
+            generateMatrix();
+            tallyScores();
+            displayDeprioritizedTasks(); 
+            displayResults();
+            saveData();
         }
 
     </script>
