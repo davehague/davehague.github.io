@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof marked !== 'undefined') {
         // Blog posts configuration
         const blogPosts = [
-            { title: 'Second Blog Post', file: 'posts/2-Second-Post.md' },
-            { title: 'First Blog Post', file: 'posts/1-Intro.md' },
+            { title: 'Second Blog Post', file: 'posts/2-second-post.md' },
+            { title: 'First Blog Post', file: 'posts/1-intro.md' },
         ];
 
         const blogContainer = document.getElementById('blog-posts');
