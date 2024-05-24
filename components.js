@@ -4,17 +4,17 @@ class SiteHeader extends HTMLElement {
             <header>
                 <nav>
                     <ul>
-                        <li><a href="/index.html">Home</a></li>
-                        <li><a href="/blog/index.html">Blog</a></li>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Blog</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropbtn">Projects</a>
                             <div class="dropdown-content">
-                                <a href="/projects/promptblocks/index.html">PromptBlocks</a>
-                                <a href="/projects/jobscraper/index.html">Job Scraper</a>
-                                <a href="/experiments/index.html">Other Experiments</a>
+                                <a href="#">PromptBlocks</a>
+                                <a href="#">Job Scraper</a>
+                                <a href="#">Other Experiments</a>
                             </div>
                         </li>
-                        <li><a href="/about.html">About Me</a></li>
+                        <li><a href="#">About Me</a></li>
                     </ul>
                 </nav>
             </header>
